@@ -1,4 +1,5 @@
 import pygame as pg  # Подключение pygame с именем pg
+from player import Player  # Подключение игрока
 from settings import *  # Подключение файла с настройками
 
 
@@ -12,6 +13,8 @@ class Game:
 	
 	def new(self):  # Создание нового уровня
 		self.all_sprites = pg.sprite.Group()  # Создание группы для всех спрайтов
+		self.player = Player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)  # Создание игрока
+		self.all_sprites.add(self.player)  # Добавление игрока в группу
 		self.run()  # Запускаем уровень
 	
 	def events(self):  # Цикл обработки событий
