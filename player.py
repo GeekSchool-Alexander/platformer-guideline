@@ -37,12 +37,44 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		self.pos += self.vel + self.acc / 2  # Перемещение от скорости и ускорения (x = x0 + v + a/2)
 		
 	def wall_processing(self):  # Отскакивание от стен
-		if (self.pos.x - PLAYER_WIDTH/2) < 0:  # Если левая часть игрока за левой стенкой
-			self.pos.x = 0 + PLAYER_WIDTH/2  # Переместить левую часть в левый край
-		elif (self.pos.x + PLAYER_WIDTH/2) > WINDOW_WIDTH:  # Если правая часть игрока за правой стенкой
-			self.pos.x = WINDOW_WIDTH - PLAYER_WIDTH/2  # Переместить правую часть игрока в правый край
+		if self.left < 0:  # Если левая часть игрока за левой стенкой
+			self.left = 0  # Переместить левую часть в левый край
+		elif self.right > WINDOW_WIDTH:  # Если правая часть игрока за правой стенкой
+			self.right = WINDOW_WIDTH  # Переместить правую часть игрока в правый край
 		
-		if (self.pos.y - PLAYER_HEIGHT/2) < 0:  # Если верхня часть игрока за верхней стенкой
-			self.pos.y = 0 + PLAYER_HEIGHT/2  # Переместить верхнюю часть в верхний край
-		elif (self.pos.y + PLAYER_HEIGHT/2) > WINDOW_HEIGHT:  # Если нижняя часть игрока за нижней стенкой
-			self.pos.y = WINDOW_HEIGHT - PLAYER_HEIGHT/2  # Переместить нижнюю часть в нижний край
+		if self.top < 0:  # Если верхня часть игрока за верхней стенкой
+			self.top = 0  # Переместить верхнюю часть в верхний край
+		elif self.bottom > WINDOW_HEIGHT:  # Если нижняя часть игрока за нижней стенкой
+			self.bottom = WINDOW_HEIGHT  # Переместить нижнюю часть в нижний край
+	
+	@property
+	def right(self):  # Правая сторона
+		return self.pos.x + PLAYER_WIDTH / 2  # Равна центру + половина ширины
+	
+	@right.setter
+	def right(self, x):  # Для правой стороны
+		self.pos.x = x - PLAYER_WIDTH / 2  # Центр левее на половину ширины
+	
+	@property
+	def left(self):  # Левая сторона
+		return self.pos.x - PLAYER_WIDTH / 2  # Равна центру - половна ширины
+	
+	@left.setter
+	def left(self, x):  # Для левой стороны
+		self.pos.x = x + PLAYER_WIDTH / 2  # Центр правее на половину ширины
+	
+	@property
+	def top(self):  # Верхняя сторона
+		return self.pos.y - PLAYER_HEIGHT / 2  # Равна центру - половину высоты
+	
+	@top.setter
+	def top(self, y):  # Для верхней стороны
+		self.pos.y = y + PLAYER_HEIGHT / 2  # Центр ниже на половину высоты
+	
+	@property
+	def bottom(self):  # Нижняя сторона
+		return self.pos.y + PLAYER_HEIGHT / 2  # Равна центру + половину высоты
+	
+	@bottom.setter
+	def bottom(self, y):  # Для нижней стороны
+		self.pos.y = y - PLAYER_HEIGHT / 2  # Центр выше на половину высоты
