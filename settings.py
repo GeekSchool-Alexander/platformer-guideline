@@ -16,3 +16,7 @@ PLAYER_HEIGHT = 30  # Высота игрока
 PLAYER_SIZE = (PLAYER_WIDTH, PLAYER_HEIGHT)  # Размеры игрока
 PLAYER_ACC = 1  # Ускорение движения по оси Х
 PLAYER_FRICTION = 0.1  # Коэффициент трения
+
+# Настройки платформ
+PLATFORM_WIDTH = 40  # Ширина платформы
+PLATFORM_HEIGHT = 40  # Высота платформы
