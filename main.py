@@ -2,6 +2,7 @@ import pygame as pg  # Подключение pygame с именем pg
 from player import Player  # Подключение игрока
 from settings import *  # Подключение файла с настройками
 from platform import Platform  # Подключение платформ
+import levels  # Подключение уровней
 
 
 class Game:
@@ -15,15 +16,33 @@ class Game:
 	def new(self):  # Создание нового уровня
 		self.all_sprites = pg.sprite.Group()  # Создание группы для всех спрайтов
 		self.platforms = pg.sprite.Group()  # Создание группы для платформ
-		
-		self.player = Player(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)  # Создание игрока
+		# Взятие двумерного кортежа настроек платформ и кортежа настроек игрока
+		plts_conf, plr_conf = self.create_level(levels.level1)
+		self.player = Player(*plr_conf)  # Создание игрока раскрыв кортеж настроек игрока
 		self.all_sprites.add(self.player)  # Добавление игрока в группу
 		
-		p = Platform(800, 500)  # Создание тестовой платформы в некоторых координатах
-		self.all_sprites.add(p)  # Добавление платформы в группу всех спрайтов
-		self.platforms.add(p)  # Добавление платформы в группу платформ
-		
+		for plt in plts_conf:  # Для каждого кортежа настроек в двумерном кортеже
+			p = Platform(*plt)  # Создаем платформу по координатам раскрывая кортеж настроек
+			# Добавляем платформу в группы
+			self.all_sprites.add(p)
+			self.platforms.add(p)
+			
 		self.run()  # Запускаем уровень
+	
+	def create_level(self, lvl):  # Получение настроек объектов из схемы уровня
+		x = y = 0  # Начало считывания схемы начинаем с (0; 0)
+		player_config = (0, 0)  # Кортеж из координат появления игрока
+		platforms_config = []  # Список для кортежей из координат платформ
+		for row in lvl:  # Для каждой строки в схеме
+			for cell in row:  # Для каждой ячейки в строке
+				if cell == "-":  # Если в ячейке схемы символ платформы
+					platforms_config.append((x, y))  # Добавляем кортеж из соответствующих координат платформы в список настроек
+				if cell == "o":  # Если в ячейке схемы символ игрока
+					player_config = (x, y)  # Сохранить соответсвующие координаты в кортеж настроек игрока
+				x += PLATFORM_WIDTH  # После каждой ячейки сдвигаемся на ширину платформы
+			y += PLATFORM_HEIGHT  # В конце строки смещаемся вниз на высоту платформы
+			x = 0  # а X смещаем в начало
+		return tuple(platforms_config), player_config  # Возвращаем кортежи с настройками
 	
 	def events(self):  # Цикл обработки событий
 		for event in pg.event.get():  # Берем события на текущем такте
