@@ -4,7 +4,10 @@ from vector import Vec2d as vec  # Подключение вектора
 
 
 class Player(pg.sprite.Sprite):  # Наследование от спрайта pygame
-	def __init__(self, x, y):  # Параметры: начальное местоположение по осям X и Y
+	def __init__(self, x, y, game):  #
+		"""Параметры:
+		Начальное местоположение по осям X и Y
+		Cсылка на игру, в которой находится игрок"""
 		super().__init__()  # Конструирование базового класса
 		self.image = pg.Surface(PLAYER_SIZE)  # Создание прямоугольного изображения
 		self.image.fill(RED)  # Заливка изображения
@@ -13,13 +16,16 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		self.vel = vec(0, 0)  # Вектор скоростей
 		self.acc = vec(0, 0)  # Вектор ускорений
 		self.pos = vec(x, y)  # Вектор местоположения игрока
+		self.game = game  # Сохранене ссылки на игру
 	
 	def update(self):
-		self.acc = vec(0, 0)  # Задание ускорения вначале такта
+		# Задание ускорения вначале такта
+		self.acc = vec(0, PLAYER_GRAVITY)  # По оси Y воздействует ускорение свободного падения
 		
 		self.control_processing()
 		
 		self.physical_calculations()
+		self.collide_processing()
 		self.rect.center = self.pos  # Перемещение изображения в местоположение игрока
 
 		self.wall_processing()
@@ -46,6 +52,30 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			self.top = 0  # Переместить верхнюю часть в верхний край
 		elif self.bottom > WINDOW_HEIGHT:  # Если нижняя часть игрока за нижней стенкой
 			self.bottom = WINDOW_HEIGHT  # Переместить нижнюю часть в нижний край
+	
+	def collide_processing(self):  # Обработка столкновений
+		# Столкновение с платформами:
+		# Взятие списка платформ, с которыми произошло столкновение
+		hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+		if hits:  # Если столкновение есть
+			collides = dict()  # Словарь столкновений;
+			for platform in hits:  # Для всех платформ, с которыми проихзошло столкновение
+				for side, plat_rect in platform.lines.items():  # Для всех граней платформы из словаря линий
+					if self.rect.colliderect(plat_rect):  # Если столкновение именно с этой линией
+						collides[side] = plat_rect  # Сохраняем название грани и линию в словарь столкновений
+			
+			if "top" in collides:  # Если столкновение с верхней линией платформы
+				self.vel.y = 0  # Останавливаемся
+				self.bottom = collides["top"].top  # Размещаем игрока над платформой
+			elif "bottom" in collides:  # Если столкновение с нижней линией платформы
+				self.vel.y = 0  # Останавливаемся
+				self.top = collides["bottom"].bottom  # Размещаем игрока под платформу
+			elif "left" in collides:  # Если столкновение с левой линией платформы
+				self.vel.x = 0  # Останавливаемся
+				self.right = collides["left"].left  # Размещаем игрока слева от платформы
+			elif "right" in collides:  # Если столкновение с правой линией платформы
+				self.vel.x = 0  # Останавливаемся
+				self.left = collides["right"].right  # Размещаем игрока справа от платформы
 	
 	@property
 	def right(self):  # Правая сторона

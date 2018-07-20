@@ -18,7 +18,7 @@ class Game:
 		self.platforms = pg.sprite.Group()  # Создание группы для платформ
 		# Взятие двумерного кортежа настроек платформ и кортежа настроек игрока
 		plts_conf, plr_conf = self.create_level(levels.level1)
-		self.player = Player(*plr_conf)  # Создание игрока раскрыв кортеж настроек игрока
+		self.player = Player(*plr_conf, self)  # Создание игрока раскрыв кортеж настроек игрока и передав ссылку на игру
 		self.all_sprites.add(self.player)  # Добавление игрока в группу
 		
 		for plt in plts_conf:  # Для каждого кортежа настроек в двумерном кортеже
