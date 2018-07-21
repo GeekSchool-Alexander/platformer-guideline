@@ -3,7 +3,7 @@ from player import Player  # Подключение игрока
 from settings import *  # Подключение файла с настройками
 from platform import Platform  # Подключение платформ
 import levels  # Подключение уровней
-
+from saw import Saw
 
 class Game:
 	def __init__(self):  # Конструктор
@@ -16,6 +16,7 @@ class Game:
 	def new(self):  # Создание нового уровня
 		self.all_sprites = pg.sprite.Group()  # Создание группы для всех спрайтов
 		self.platforms = pg.sprite.Group()  # Создание группы для платформ
+		self.saws = pg.sprite.Group()  # Создание группы для пил
 		# Взятие двумерного кортежа настроек платформ и кортежа настроек игрока
 		plts_conf, plr_conf = self.create_level(levels.level1)
 		self.player = Player(*plr_conf, self)  # Создание игрока раскрыв кортеж настроек игрока и передав ссылку на игру
@@ -26,7 +27,12 @@ class Game:
 			# Добавляем платформу в группы
 			self.all_sprites.add(p)
 			self.platforms.add(p)
-			
+		
+		s = Saw(100, 100)  # Создание тестовой пилы
+		# Добавляем пилу в группы
+		self.all_sprites.add(s)
+		self.saws.add(s)
+		
 		self.run()  # Запускаем уровень
 	
 	def create_level(self, lvl):  # Получение настроек объектов из схемы уровня
