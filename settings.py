@@ -18,6 +18,7 @@ PLAYER_ACC = 1  # Ускорение движения по оси Х
 PLAYER_FRICTION = 0.1  # Коэффициент трения
 PLAYER_GRAVITY = 1  # Ускорение свободного падения
 PLAYER_JUMP = 20  # Импульс прыжка
+PLAYER_ANIMATE_DELAY = 75  # Период смены кадров
 
 # Настройки платформ
 PLATFORM_WIDTH = 40  # Ширина платформы

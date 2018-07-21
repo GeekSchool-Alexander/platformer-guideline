@@ -9,8 +9,18 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		Начальное местоположение по осям X и Y
 		Cсылка на игру, в которой находится игрок"""
 		super().__init__()  # Конструирование базового класса
-		self.image = pg.Surface(PLAYER_SIZE)  # Создание прямоугольного изображения
-		self.image.fill(RED)  # Заливка изображения
+		self.frames = (
+		pg.image.load("./images/ball0.png"),
+		pg.image.load("./images/ball1.png"),
+		pg.image.load("./images/ball2.png"),
+		pg.image.load("./images/ball3.png"),
+		pg.image.load("./images/ball4.png"),
+		pg.image.load("./images/ball5.png"),
+		pg.image.load("./images/ball6.png"),
+		pg.image.load("./images/ball7.png"))  # Загружаем в кортеж с кадрами все изображения для анимации
+		self.current_frame = 0  # Индекс текущего кадра анимации
+		self.last_update = pg.time.get_ticks()  # Время последней смены кадра; Изначально равен моменту создания игрока
+		self.image = self.frames[self.current_frame]  # Текущее изображение из кортежа кадров по текущему индексу
 		self.rect = self.image.get_rect()  # Взятие прямоугольника
 		self.rect.center = (x, y)  # Задание координат центра
 		self.vel = vec(0, 0)  # Вектор скоростей
@@ -30,6 +40,7 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		self.rect.center = self.pos  # Перемещение изображения в местоположение игрока
 
 		self.wall_processing()
+		self.animate()
 
 	def control_processing(self):  # Обработка нажатия клавиш управления
 		keys = pg.key.get_pressed()  # Взятие словаря нажатых клавиш
@@ -85,6 +96,24 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			elif "right" in collides:  # Если столкновение с правой линией платформы
 				self.vel.x = 0  # Останавливаемся
 				self.left = collides["right"].right  # Размещаем игрока справа от платформы
+	
+	def animate(self):  # Анимация движения
+		now = pg.time.get_ticks()  # Берем текущее время
+		if now - self.last_update >= PLAYER_ANIMATE_DELAY:  # Если с последней смены кадра прошла длительность периода
+			self.last_update = now  # Временем последней смены кадра будет текущий момент
+			# Сменяем кадр:
+			if int(self.vel.x) > 0:  # Если движемся вправо
+				self.current_frame += 1  # Индекс кадра сменяем на следующий
+				# Кадры сменяются циклично:
+				if self.current_frame >= len(self.frames):  # Если вышли за границу кортежа с кадрами
+					self.current_frame = 0  # Возвращаемся в начало кортежа
+			elif int(self.vel.x) < 0:  # Если движемся влево
+				self.current_frame -= 1  # Индекс кадра сменяем на предыдущий
+				# Кадры сменяются циклично:
+				if self.current_frame < 0:  # Если вышли за границу кортежа с кадрами
+					self.current_frame = len(self.frames) - 1  # Возвращаемся в конец кортежа
+			# По расчитаному индексу достаем кадр и используем как изображение для текущего такта
+			self.image = self.frames[self.current_frame]
 	
 	@property
 	def right(self):  # Правая сторона
