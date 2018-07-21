@@ -17,6 +17,7 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		self.acc = vec(0, 0)  # Вектор ускорений
 		self.pos = vec(x, y)  # Вектор местоположения игрока
 		self.game = game  # Сохранене ссылки на игру
+		self.on_ground = False  # Изначально не на земле
 	
 	def update(self):
 		# Задание ускорения вначале такта
@@ -36,7 +37,13 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			self.acc.x = -PLAYER_ACC  # Задать ускорение по оси Х влево
 		if keys[pg.K_RIGHT]:  # Если нажато Вправо
 			self.acc.x = PLAYER_ACC  # Задать ускорение по оси Y вправо
-			
+		if keys[pg.K_UP]:  # Если нажато Вверх
+			self.jump()  # Прыгнуть
+	
+	def jump(self):  # Прыжок
+		if self.on_ground:  # Если на земле
+			self.vel.y = -PLAYER_JUMP  # Дать импульс вверх
+	
 	def physical_calculations(self):  # Физические расчеты
 		self.acc -= self.vel * PLAYER_FRICTION  # Расчет ускорения от скорости и коэффициента трения
 		self.vel += self.acc  # Усвеличение скорости от ускорения (v = v0 + a*t)
@@ -55,6 +62,7 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 	
 	def collide_processing(self):  # Обработка столкновений
 		# Столкновение с платформами:
+		self.on_ground = False  # Вначале такта не на земле
 		# Взятие списка платформ, с которыми произошло столкновение
 		hits = pg.sprite.spritecollide(self, self.game.platforms, False)
 		if hits:  # Если столкновение есть
@@ -67,6 +75,7 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			if "top" in collides:  # Если столкновение с верхней линией платформы
 				self.vel.y = 0  # Останавливаемся
 				self.bottom = collides["top"].top  # Размещаем игрока над платформой
+				self.on_ground = True  # Игрок на земле
 			elif "bottom" in collides:  # Если столкновение с нижней линией платформы
 				self.vel.y = 0  # Останавливаемся
 				self.top = collides["bottom"].bottom  # Размещаем игрока под платформу
