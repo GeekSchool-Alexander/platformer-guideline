@@ -18,7 +18,7 @@ class Game:
 		self.platforms = pg.sprite.Group()  # Создание группы для платформ
 		self.saws = pg.sprite.Group()  # Создание группы для пил
 		# Взятие двумерного кортежа настроек платформ и кортежа настроек игрока
-		plts_conf, plr_conf = self.create_level(levels.level1)
+		plts_conf, sws_cong, plr_conf = self.create_level(levels.level1)
 		self.player = Player(*plr_conf, self)  # Создание игрока раскрыв кортеж настроек игрока и передав ссылку на игру
 		self.all_sprites.add(self.player)  # Добавление игрока в группу
 		
@@ -28,10 +28,11 @@ class Game:
 			self.all_sprites.add(p)
 			self.platforms.add(p)
 		
-		s = Saw(100, 100)  # Создание тестовой пилы
-		# Добавляем пилу в группы
-		self.all_sprites.add(s)
-		self.saws.add(s)
+		for saw in sws_cong:  # Для каждого кортежа настроек в двумерном кортеже
+			s = Saw(*saw)  # Создаем пилу по координатам раскрывая кортеж настроек
+			# Добавляем платформу в группы
+			self.all_sprites.add(s)
+			self.saws.add(s)
 		
 		self.run()  # Запускаем уровень
 	
@@ -39,16 +40,19 @@ class Game:
 		x = y = 0  # Начало считывания схемы начинаем с (0; 0)
 		player_config = (0, 0)  # Кортеж из координат появления игрока
 		platforms_config = []  # Список для кортежей из координат платформ
+		saws_config = []  # Список для кортежей из координат пил
 		for row in lvl:  # Для каждой строки в схеме
 			for cell in row:  # Для каждой ячейки в строке
 				if cell == "-":  # Если в ячейке схемы символ платформы
 					platforms_config.append((x, y))  # Добавляем кортеж из соответствующих координат платформы в список настроек
 				if cell == "o":  # Если в ячейке схемы символ игрока
 					player_config = (x, y)  # Сохранить соответсвующие координаты в кортеж настроек игрока
+				if cell == "*":  # Если в ячейке схемы символ пилы
+					saws_config.append((x, y))  # Добавляем кортеж из соответствующих координат пилы в список настроек
 				x += PLATFORM_WIDTH  # После каждой ячейки сдвигаемся на ширину платформы
 			y += PLATFORM_HEIGHT  # В конце строки смещаемся вниз на высоту платформы
 			x = 0  # а X смещаем в начало
-		return tuple(platforms_config), player_config  # Возвращаем кортежи с настройками
+		return tuple(platforms_config), tuple(saws_config), player_config  # Возвращаем кортежи с настройками
 	
 	def events(self):  # Цикл обработки событий
 		for event in pg.event.get():  # Берем события на текущем такте
