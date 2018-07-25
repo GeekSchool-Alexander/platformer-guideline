@@ -1,6 +1,6 @@
 import pygame as pg
 from settings import *
-
+from vector import Vec2d as vec
 
 class Saw(pg.sprite.Sprite):
 	def __init__(self, x, y):
@@ -34,3 +34,32 @@ class Saw(pg.sprite.Sprite):
 				self.current_frame = 0  # Возвращаемся в начало кортежа
 			# По расчитаному индексу достаем кадр и используем как изображение для текущего такта
 			self.image = self.frames[self.current_frame]
+
+
+class FlyingSaw(Saw):
+	def __init__(self, x, y, direction):
+		super().__init__(x, y)
+		self.vel = self.generate_speed(direction)  # Задание скорости движения
+	
+	def generate_speed(self, direction):  # Генерация скорости движения на основе направления
+		if isinstance(direction, str):  # Проверяем что направление - строка
+			vel = vec(0, 0)  # Заготовка вектора скорости
+			if direction == "up":
+				vel = vec(0, -SAW_SPEED)
+			elif direction == "down":
+				vel = vec(0, SAW_SPEED)
+			elif direction == "left":
+				vel = vec(-SAW_SPEED, 0)
+			elif direction == "right":
+				vel = vec(SAW_SPEED, 0)
+			else:  # Если направление не одно и четырёх, оно неверное; ValueError
+				raise ValueError("Invalid direction")
+			return vel  # Возвращаем полученную скорость
+		else:  # Иначе TypeError
+			raise TypeError("Direction must be str")
+	
+	def update(self):
+		self.animate()  # Анимация
+		# Перемещение
+		self.rect.x += self.vel.x
+		self.rect.y += self.vel.y

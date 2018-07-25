@@ -26,6 +26,7 @@ PLATFORM_HEIGHT = 40  # Высота платформы
 PLATFORM_EMPTY_CORNER = 1  # Размер пустого угла; Применяется для игнорирования случаев касания двух граней
 
 # Настройки пил
-SAW_WIDTH = 40
-SAW_HEIGHT = 40
-SAW_ANIMATE_DELAY = 15
+SAW_WIDTH = 40  # Ширина пилы
+SAW_HEIGHT = 40  # Высота пилы
+SAW_ANIMATE_DELAY = 15  # Период смены кадров
+SAW_SPEED = 5  # Скорость движения летающей пилы

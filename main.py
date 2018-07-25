@@ -3,7 +3,7 @@ from player import Player  # Подключение игрока
 from settings import *  # Подключение файла с настройками
 from platform import Platform  # Подключение платформ
 import levels  # Подключение уровней
-from saw import Saw
+from saw import Saw, FlyingSaw
 
 class Game:
 	def __init__(self):  # Конструктор
@@ -33,6 +33,11 @@ class Game:
 			# Добавляем платформу в группы
 			self.all_sprites.add(s)
 			self.saws.add(s)
+			
+		s = FlyingSaw(300, 0, "down")  # Создание тестовой летающей пилы
+		# Добавляем летающую пилу в группы
+		self.all_sprites.add(s)
+		self.saws.add(s)
 		
 		self.run()  # Запускаем уровень
 	
