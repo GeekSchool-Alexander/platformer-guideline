@@ -34,7 +34,7 @@ class Game:
 			self.all_sprites.add(s)
 			self.saws.add(s)
 			
-		s = FlyingSaw(300, 0, "down")  # Создание тестовой летающей пилы
+		s = FlyingSaw(300, 40, "down", self.platforms)  # Создание тестовой летающей пилы
 		# Добавляем летающую пилу в группы
 		self.all_sprites.add(s)
 		self.saws.add(s)

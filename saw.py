@@ -37,9 +37,10 @@ class Saw(pg.sprite.Sprite):
 
 
 class FlyingSaw(Saw):
-	def __init__(self, x, y, direction):
+	def __init__(self, x, y, direction, platforms):
 		super().__init__(x, y)
 		self.vel = self.generate_speed(direction)  # Задание скорости движения
+		self.platforms = platforms  # Сохранение ссылки на платформы
 	
 	def generate_speed(self, direction):  # Генерация скорости движения на основе направления
 		if isinstance(direction, str):  # Проверяем что направление - строка
@@ -60,6 +61,13 @@ class FlyingSaw(Saw):
 	
 	def update(self):
 		self.animate()  # Анимация
+		self.collide_processing()
 		# Перемещение
 		self.rect.x += self.vel.x
 		self.rect.y += self.vel.y
+		
+	def collide_processing(self):  # Обработка столкновеения с платформами
+		# Взятие списка платформ, с которыми произошло столкновение
+		hits = pg.sprite.spritecollide(self, self.platforms, False)
+		if hits:  # Если столкновение есть
+			self.vel = -self.vel  # Меняем направление на противоположное
