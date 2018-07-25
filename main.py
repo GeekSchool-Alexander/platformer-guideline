@@ -18,7 +18,7 @@ class Game:
 		self.platforms = pg.sprite.Group()  # Создание группы для платформ
 		self.saws = pg.sprite.Group()  # Создание группы для пил
 		# Взятие двумерного кортежа настроек платформ и кортежа настроек игрока
-		plts_conf, sws_cong, plr_conf = self.create_level(levels.level1)
+		plts_conf, sws_cong, fl_sws_conf, plr_conf = self.create_level(levels.level1)
 		self.player = Player(*plr_conf, self)  # Создание игрока раскрыв кортеж настроек игрока и передав ссылку на игру
 		self.all_sprites.add(self.player)  # Добавление игрока в группу
 		
@@ -33,11 +33,12 @@ class Game:
 			# Добавляем платформу в группы
 			self.all_sprites.add(s)
 			self.saws.add(s)
-			
-		s = FlyingSaw(300, 40, "down", self.platforms)  # Создание тестовой летающей пилы
-		# Добавляем летающую пилу в группы
-		self.all_sprites.add(s)
-		self.saws.add(s)
+		
+		for saw in fl_sws_conf:  # Для каждого кортежа настроек в двумерном кортеже
+			s = FlyingSaw(*saw, self.platforms)  # Создание летающей пилы
+			# Добавляем летающую пилу в группы
+			self.all_sprites.add(s)
+			self.saws.add(s)
 		
 		self.run()  # Запускаем уровень
 	
@@ -46,6 +47,7 @@ class Game:
 		player_config = (0, 0)  # Кортеж из координат появления игрока
 		platforms_config = []  # Список для кортежей из координат платформ
 		saws_config = []  # Список для кортежей из координат пил
+		flying_saws_config = []
 		for row in lvl:  # Для каждой строки в схеме
 			for cell in row:  # Для каждой ячейки в строке
 				if cell == "-":  # Если в ячейке схемы символ платформы
@@ -54,10 +56,20 @@ class Game:
 					player_config = (x, y)  # Сохранить соответсвующие координаты в кортеж настроек игрока
 				if cell == "*":  # Если в ячейке схемы символ пилы
 					saws_config.append((x, y))  # Добавляем кортеж из соответствующих координат пилы в список настроек
+				if cell == "<":  # Если в ячейке схемы символ пилы, летящей влево
+					flying_saws_config.append((x, y, "left"))  # Добавляем кортеж из соответствующих координат и направления
+				if cell == ">":  # Если в ячейке схемы символ пилы, летящей вправо
+					flying_saws_config.append((x, y, "right"))  # Добавляем кортеж из соответствующих координат и направления
+				if cell == "^":  # Если в ячейке схемы символ пилы, летящей вверх
+					flying_saws_config.append((x, y, "up"))  # Добавляем кортеж из соответствующих координат и направления
+				if cell == "v":  # Если в ячейке схемы символ пилы, летящей вниз
+					flying_saws_config.append((x, y, "down"))  # Добавляем кортеж из соответствующих координат и направления
 				x += PLATFORM_WIDTH  # После каждой ячейки сдвигаемся на ширину платформы
 			y += PLATFORM_HEIGHT  # В конце строки смещаемся вниз на высоту платформы
 			x = 0  # а X смещаем в начало
-		return tuple(platforms_config), tuple(saws_config), player_config  # Возвращаем кортежи с настройками
+		# Возвращаем кортежи с настройками
+		return tuple(platforms_config), tuple(saws_config), tuple(flying_saws_config), player_config
+
 	
 	def events(self):  # Цикл обработки событий
 		for event in pg.event.get():  # Берем события на текущем такте
