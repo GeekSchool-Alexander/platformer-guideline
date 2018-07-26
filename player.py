@@ -104,6 +104,11 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			time.sleep(1)  # Пауза одна секунда
 			self.game.playing = False  # Запуск уровня заново
 		
+		# Столкновение с порталом:
+		hits = self.rect.colliderect(self.game.portal.rect)
+		if hits: # Если есть столкновение с порталом
+			pg.event.post(pg.event.Event(pg.QUIT))  # Послать событие выхода из игры
+		
 	def animate(self):  # Анимация движения
 		now = pg.time.get_ticks()  # Берем текущее время
 		if now - self.last_update >= PLAYER_ANIMATE_DELAY:  # Если с последней смены кадра прошла длительность периода
