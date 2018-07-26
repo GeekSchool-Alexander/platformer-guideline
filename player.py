@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from vector import Vec2d as vec  # Подключение вектора
+import time
 
 
 class Player(pg.sprite.Sprite):  # Наследование от спрайта pygame
@@ -96,7 +97,13 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 			elif "right" in collides:  # Если столкновение с правой линией платформы
 				self.vel.x = 0  # Останавливаемся
 				self.left = collides["right"].right  # Размещаем игрока справа от платформы
-	
+		
+		# Столкновение с пилами:
+		hits = pg.sprite.spritecollide(self, self.game.saws, False)
+		if hits:  # Если есть столкновение с пилами
+			time.sleep(1)  # Пауза одна секунда
+			self.game.playing = False  # Запуск уровня заново
+		
 	def animate(self):  # Анимация движения
 		now = pg.time.get_ticks()  # Берем текущее время
 		if now - self.last_update >= PLAYER_ANIMATE_DELAY:  # Если с последней смены кадра прошла длительность периода
