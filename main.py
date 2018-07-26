@@ -12,6 +12,7 @@ class Game:
 		self.screen = pg.display.set_mode(WINDOW_SIZE)  # Создание окна с размером из настроек
 		self.background = pg.image.load("./images/background.jpg")  # Загрузка изображения фона
 		pg.display.set_caption("GeekSchool Platformer")  # Заголовок окна
+		pg.display.set_icon(pg.image.load("./images/icon.jpg"))  # Установка иконки
 		self.clock = pg.time.Clock()  # Объект для отслеживания времени (тактов)
 		self.running = True  # Флаг продолжения работы программы
 		self.font = pg.font.SysFont("timesnewroman", 200)  # Создание шрифта
