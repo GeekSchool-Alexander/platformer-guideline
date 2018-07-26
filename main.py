@@ -10,6 +10,7 @@ class Game:
 	def __init__(self):  # Конструктор
 		pg.init()  # Запуск pygame
 		self.screen = pg.display.set_mode(WINDOW_SIZE)  # Создание окна с размером из настроек
+		self.background = pg.image.load("./images/background.jpg")  # Загрузка изображения фона
 		pg.display.set_caption("GeekSchool Platformer")  # Заголовок окна
 		self.clock = pg.time.Clock()  # Объект для отслеживания времени (тактов)
 		self.running = True  # Флаг продолжения работы программы
@@ -95,7 +96,7 @@ class Game:
 		self.all_sprites.update()  # Обновление всех спрайтов
 	
 	def draw(self):  # Отрисовка
-		self.screen.fill(WHITE)  # Заливка окна белым цветом
+		self.screen.blit(self.background, (0, 0))  # Отрисовка фона
 		self.all_sprites.draw(self.screen)  # Отрисовка всех спрайтов
 		if self.player_won:  # Если игрок победил
 			self.screen.blit(self.win_text, (75, 150))  # Отобразить победную надпись в необходимых координатах
