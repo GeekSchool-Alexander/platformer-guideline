@@ -107,6 +107,7 @@ class Player(pg.sprite.Sprite):  # Наследование от спрайта 
 		# Столкновение с порталом:
 		hits = self.rect.colliderect(self.game.portal.rect)
 		if hits: # Если есть столкновение с порталом
+			self.game.player_won = True  # Игрок победил
 			pg.event.post(pg.event.Event(pg.QUIT))  # Послать событие выхода из игры
 		
 	def animate(self):  # Анимация движения

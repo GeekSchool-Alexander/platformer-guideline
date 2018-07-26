@@ -13,6 +13,9 @@ class Game:
 		pg.display.set_caption("GeekSchool Platformer")  # Заголовок окна
 		self.clock = pg.time.Clock()  # Объект для отслеживания времени (тактов)
 		self.running = True  # Флаг продолжения работы программы
+		self.font = pg.font.SysFont("timesnewroman", 200)  # Создание шрифта
+		self.win_text = self.font.render("YOU WIN", 1, DARK_GREEN)  # Создание победной надписи
+		self.player_won = False  # Флаг победы
 	
 	def new(self):  # Создание нового уровня
 		self.all_sprites = pg.sprite.Group()  # Создание группы для всех спрайтов
@@ -90,6 +93,8 @@ class Game:
 	def draw(self):  # Отрисовка
 		self.screen.fill(WHITE)  # Заливка окна белым цветом
 		self.all_sprites.draw(self.screen)  # Отрисовка всех спрайтов
+		if self.player_won:  # Если игрок победил
+			self.screen.blit(self.win_text, (75, 150))  # Отобразить победную надпись в необходимых координатах
 		pg.display.flip()  # Отображение кадра из буфера на экран
 	
 	def run(self):  # Основной цикл
