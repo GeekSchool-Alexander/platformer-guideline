@@ -86,6 +86,10 @@ class Game:
 			if event.type == pg.QUIT:  # Если пришло событие о выходе (нажатие на крестик или Alt+F4)
 				self.playing = False  # Останавливаем уровень
 				self.running = False  # Останавливаем основной цикл программы
+			elif event.type == pg.KEYDOWN:  # Если пришло событие о нажатии клавиши
+				if event.key == pg.K_ESCAPE:  # ESC
+					self.playing = False  # Останавливаем уровень
+					self.running = False  # Останавливаем основной цикл программы
 	
 	def update(self):  # Обновление состояния игровых объектов
 		self.all_sprites.update()  # Обновление всех спрайтов
